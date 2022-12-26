@@ -11,34 +11,29 @@ proc parser(
     initOrderedTable[string, string]()
   ]()
 
+
   while true:
     list.next()
-    echo list
 
-    parameters[index] = {
-      "key": "",
-      "type": "",
-      "value": "",
-    }.toOrderedTable
+    if list.kind == cmdEnd:
+      break
+
+    parameters[index] = {"key": "", "value": "", "type": ""}.toOrderedTable
+
+    parameters[index]["key"] = list.key
+    parameters[index]["value"] = list.val
 
     case list.kind
-      of cmdEnd:
-        break
-
       of cmdArgument:
-        parameters[index]["key"] = list.key
         parameters[index]["type"] = "argument"
 
-      of cmdShortOption, cmdLongOption:
-        if list.val == "":
-          parameters[index]["value"] = ""
-          parameters[index]["type"] = "key"
-          parameters[index]["key"] = list.key
-        
-        else:
-          parameters[index]["key"] = list.key
-          parameters[index]["value"] = list.val
-          parameters[index]["type"] = "keyvalue"
+      of cmdShortOption:
+        parameters[index]["type"] = "short"
+      
+      of cmdLongOption:
+        parameters[index]["type"] = "long"
+      
+      else: discard
 
     index += 1
 
