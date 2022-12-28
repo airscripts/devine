@@ -3,9 +3,9 @@ import os
 include core/proxy
 include core/parser
 
-var commandLineParameters = initOptParser(
+var parameters = initOptParser(
   commandLineParams()
 )
 
-let parameters = parser(commandLineParameters)
-proxy(parameters)
+let commands = parser(parameters)
+proxy(commands)
