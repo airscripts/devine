@@ -1,8 +1,11 @@
 import os
+
+include core/proxy
 include core/parser
 
 var commandLineParameters = initOptParser(
   commandLineParams()
 )
 
-echo parser(commandLineParameters)
+let parameters = parser(commandLineParameters)
+proxy(parameters)
