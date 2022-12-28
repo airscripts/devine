@@ -18,7 +18,11 @@ proc parser(
     if list.kind == cmdEnd:
       break
 
-    parameters[index] = {"key": "", "value": "", "type": ""}.toOrderedTable
+    parameters[index] = {
+      "key": "", 
+      "value": "", 
+      "type": ""
+    }.toOrderedTable
 
     parameters[index]["key"] = list.key
     parameters[index]["value"] = list.val
@@ -33,7 +37,8 @@ proc parser(
       of cmdLongOption:
         parameters[index]["type"] = "long"
       
-      else: discard
+      else: 
+        discard
 
     index += 1
 
