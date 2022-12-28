@@ -1,16 +1,14 @@
 import std/tables
 import std/parseopt
 
-proc parser(
-  list: var OptParser
-): OrderedTable[int, OrderedTable[string, string]] =
+include ../interfaces/common
+
+proc parser(list: var OptParser): Listionary =
   var index: int = 0
 
   var parameters = initOrderedTable[
-    int,
-    initOrderedTable[string, string]()
+    int, initOrderedTable[string, string]()
   ]()
-
 
   while true:
     list.next()
