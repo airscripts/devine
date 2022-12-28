@@ -1,12 +1,19 @@
 import std/tables
 
+include ../functions/help
+include ../functions/validate
+
 proc proxy(parameters: OrderedTable[int, OrderedTable[string, string]]) =
   for parameter in parameters.values:
     case parameter["key"]
+      of "validate":
+        validate()
+        break
+
       of "help":
-        echo "Help function."
+        help()
         break
 
       else:
-        echo "Default case."
+        help()
         break
