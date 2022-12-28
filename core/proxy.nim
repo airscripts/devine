@@ -1,7 +1,7 @@
 import std/tables
 
+include ../types/common
 include ../functions/help
-include ../interfaces/common
 include ../functions/validate
 
 proc proxy(commands: Listionary) =
