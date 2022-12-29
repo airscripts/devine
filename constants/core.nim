@@ -3,3 +3,8 @@ const DEFAULT_INDEX* = {
   "type": "",
   "value": "",
 }
+
+const PROXY_KEYS* = (
+  help: "help",
+  validate: "validate",
+)
