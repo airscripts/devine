@@ -1,40 +1,48 @@
-import std/parseopt
+import std/tables 
 
-proc parser(list: var OptParser): Listionary =
-  var index: int = 0
+from std/parseopt import
+  next,
+  cmdEnd,
+  OptParser,
+  cmdArgument,
+  CmdLineKind,
+  cmdLongOption,
+  cmdShortOption
 
-  var parameters = initOrderedTable[
-    int, initOrderedTable[string, string]()
-  ]()
+from ../types/index as types import Listionary
+from ../constants/index as constants import DEFAULT_INDEX 
+
+proc initializeIndex(): OrderedTable[string, string] =
+  return DEFAULT_INDEX.toOrderedTable
+
+proc setParameterType(kind: CmdLineKind): string = 
+  case kind
+    of cmdArgument:
+      return "argument"
+
+    of cmdShortOption:
+      return "short"
+    
+    of cmdLongOption:
+      return "long"
+    
+    else: 
+      discard
+
+proc parser*(list: var OptParser): Listionary =
+  var index = 0
+  var parameters = initOrderedTable[int, initOrderedTable[string, string]()]()
 
   while true:
     list.next()
 
-    if list.kind == cmdEnd:
-      break
+    let isCmdEnd = list.kind == cmdEnd
+    if isCmdEnd: break
 
-    parameters[index] = {
-      "key": "", 
-      "value": "", 
-      "type": ""
-    }.toOrderedTable
-
+    parameters[index] = initializeIndex()
     parameters[index]["key"] = list.key
     parameters[index]["value"] = list.val
-
-    case list.kind
-      of cmdArgument:
-        parameters[index]["type"] = "argument"
-
-      of cmdShortOption:
-        parameters[index]["type"] = "short"
-      
-      of cmdLongOption:
-        parameters[index]["type"] = "long"
-      
-      else: 
-        discard
-
+    parameters[index]["type"] = setParameterType(list.kind)
     index += 1
 
   return parameters
