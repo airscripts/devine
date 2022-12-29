@@ -1,7 +1,4 @@
-import std/tables
 import std/parseopt
-
-include ../types/common
 
 proc parser(list: var OptParser): Listionary =
   var index: int = 0

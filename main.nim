@@ -1,4 +1,6 @@
 import os
+import std/tables
+import types/common
 
 include core/proxy
 include core/parser

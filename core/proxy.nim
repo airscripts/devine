@@ -1,6 +1,3 @@
-import std/tables
-
-include ../types/common
 include ../functions/help
 include ../functions/validate
 
