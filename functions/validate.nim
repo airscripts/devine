@@ -1,2 +1,2 @@
 proc validate*() =
-  echo "Validate function."
+  echo "nothing to see here"
