@@ -1,17 +1,19 @@
-include ../functions/help
-include ../functions/validate
+import std/tables
 
-proc proxy(commands: Listionary) =
+from ../types/index as types import Listionary
+from ../functions/index as functions import help, validate
+
+proc proxy*(commands: Listionary) =
   for command in commands.values:
     case command["key"]
       of "validate":
-        validate()
+        functions.validate()
         break
 
       of "help":
-        help()
+        functions.help()
         break
 
       else:
-        help()
+        functions.help()
         break
