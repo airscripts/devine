@@ -1,6 +1,7 @@
-import os
+import std/os
 import std/tables
-import types/common
+import types/index as types
+import descriptors/index as descriptors
 
 include core/proxy
 include core/parser

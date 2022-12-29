@@ -1,2 +1,2 @@
 proc help() =
-  echo "Help function."
+  echo descriptors.help.descriptor
