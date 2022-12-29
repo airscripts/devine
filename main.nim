@@ -1,10 +1,8 @@
-import std/os
-import std/tables
-import types/index as types
-import descriptors/index as descriptors
+from std/os import commandLineParams
+from std/parseopt import initOptParser
 
-include core/proxy
-include core/parser
+from core/proxy import proxy
+from core/parser import parser
 
 var parameters = initOptParser(
   commandLineParams()
