@@ -1,2 +1,2 @@
-proc validate() =
+proc validate*() =
   echo "Validate function."
