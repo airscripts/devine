@@ -11,18 +11,18 @@ Usage:
 
 let commands = """
 Commands:
-  validate                validate a given specific against a json file
-  help                    show this help
+  validate                Validate a given specific against a JSON file
+  help                    Show this help
 """
 
 let options = """
 Options:
-  nothing to see here
+  Nothing to see here
 """
 
 let arguments = """
 Arguments:
-  nothing to see here
+  Nothing to see here
 """
 
 let descriptor* = fmt"""
