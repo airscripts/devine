@@ -12,8 +12,8 @@ from std/parseopt import
 from ../types/index as types import Listionary
 from ../constants/index as constants import DEFAULT_INDEX 
 
-proc initializeIndex(): OrderedTable[string, string] =
-  return DEFAULT_INDEX.toOrderedTable
+proc initializeIndex(): OrderedTableRef[string, string] =
+  return DEFAULT_INDEX.newOrderedTable
 
 proc setParameterType(kind: CmdLineKind): string = 
   case kind
@@ -31,7 +31,7 @@ proc setParameterType(kind: CmdLineKind): string =
 
 proc parser*(list: var OptParser): Listionary =
   var index = 0
-  var parameters = initOrderedTable[int, initOrderedTable[string, string]()]()
+  var parameters = newOrderedTable[int, newOrderedTable[string, string]()]()
 
   while true:
     list.next()

@@ -5,20 +5,18 @@ from ../constants/index as constants import PROXY_KEYS
 from ../functions/index as functions import help, validate
 
 proc proxy*(commands: Listionary) =
-  for command in commands.values:
-    case command["key"]
-      of PROXY_KEYS.validate:
-        functions.validate()
-        break
+  var command: OrderedTableRef[string, string]
+  discard commands.pop(0, command)
 
-      of PROXY_KEYS.support:
-        functions.support()
-        break
+  case command["key"]
+    of PROXY_KEYS.validate:
+      functions.validate()
 
-      of PROXY_KEYS.help:
-        functions.help()
-        break
+    of PROXY_KEYS.support:
+      functions.support()
 
-      else:
-        functions.help()
-        break
+    of PROXY_KEYS.help:
+      functions.help()
+
+    else:
+      functions.help()
