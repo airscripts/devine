@@ -12,6 +12,7 @@ Usage:
 let commands = """
 Commands:
   validate                Validate a given specific against a JSON file
+  support                 Show how you can support me and projects like this one
   help                    Show this help
 """
 
