@@ -1,4 +1,4 @@
-import ../descriptors/index as descriptors
+from ../descriptors/index as descriptors import help
 
-proc help*() =
+proc help*(): void =
   echo descriptors.help.descriptor
