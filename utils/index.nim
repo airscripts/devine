@@ -1,0 +1,2 @@
+import hasArgument
+export hasArgument
