@@ -5,6 +5,7 @@ from std/json import JsonNode, parseJson
 from ../types/index as types import Listionary
 from ../utils/index as utils import hasArgument
 from ../constants/index as constants import VALIDATE_OPTIONS
+from ../errors/index as errors import SPEC_NOT_AVAILABLE, CUSTOM_SPEC_NOT_FOUND
 
 proc specs(filename: string): JsonNode =
   try:
@@ -14,7 +15,7 @@ proc specs(filename: string): JsonNode =
     return parseJson(spec)
 
   except IOError:
-    echo "Spec not available."
+    echo SPEC_NOT_AVAILABLE
 
 proc custom(path: string): JsonNode =
   try:
@@ -22,7 +23,7 @@ proc custom(path: string): JsonNode =
     return parseJson(spec)
 
   except IOError:
-    echo "Custom spec not found."
+    echo CUSTOM_SPEC_NOT_FOUND
 
 proc validate*(args: Listionary): void =
   var spec: JsonNode
