@@ -1,23 +1,35 @@
 import std/tables
 
 from ../types/index as types import Listionary
+from ../utils/index as utils import hasArgument
 
-proc validate*(args: Listionary) =
+proc specs(): void =
+  echo "specs procedure."
+
+proc custom(): void =
+  echo "custom procedure."
+
+proc validate*(args: Listionary): void =
   var path: OrderedTableRef[string, string]
   var length: int = len(args)
-  discard args.pop(length, path)
+
+  if utils.hasArgument(args[length]):
+    discard args.pop(length, path)
 
   for arg in args.values:
     case arg["key"]:
-      of "specification":
-        if cast[bool](arg["value"]): 
-          echo "--specification option applied;"
+      of "spec":
+        if cast[bool](arg["value"]):
+          specs()
+          echo "--spec option applied;"
 
       of "custom":
-        if cast[bool](arg["value"]): 
+        if cast[bool](arg["value"]):
+          custom()
           echo "--custom option applied;"
       
       else:
         echo "option skipped;"
 
-  echo path
+  if cast[bool](path):
+    echo path
