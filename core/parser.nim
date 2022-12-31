@@ -10,7 +10,7 @@ from std/parseopt import
   cmdShortOption
 
 from ../types/index as types import Listionary
-from ../constants/index as constants import DEFAULT_INDEX 
+from ../constants/index as constants import DEFAULT_INDEX, PARAMETER_TYPE
 
 proc initializeIndex(): OrderedTableRef[string, string] =
   return DEFAULT_INDEX.newOrderedTable
@@ -18,25 +18,28 @@ proc initializeIndex(): OrderedTableRef[string, string] =
 proc setParameterType(kind: CmdLineKind): string = 
   case kind
     of cmdArgument:
-      return "argument"
+      return PARAMETER_TYPE.argument
 
     of cmdShortOption:
-      return "short"
+      return PARAMETER_TYPE.short
     
     of cmdLongOption:
-      return "long"
+      return PARAMETER_TYPE.long
     
     else: 
       discard
 
 proc parser*(list: var OptParser): Listionary =
-  var index = 0
-  var parameters = newOrderedTable[int, newOrderedTable[string, string]()]()
+  var index: int = 0
+
+  var parameters: Listionary = newOrderedTable[
+    int, newOrderedTable[string, string]()
+  ]()
 
   while true:
     list.next()
 
-    let isCmdEnd = list.kind == cmdEnd
+    let isCmdEnd: bool = list.kind == cmdEnd
     if isCmdEnd: break
 
     parameters[index] = initializeIndex()
