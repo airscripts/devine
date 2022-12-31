@@ -1,4 +1,4 @@
-import ../descriptors/index as descriptors
+from ../descriptors/index as descriptors import support
 
-proc support*() =
+proc support*(): void =
   echo descriptors.support.descriptor
