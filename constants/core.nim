@@ -9,3 +9,9 @@ const PROXY_KEYS*: tuple = (
   support: "support",
   validate: "validate",
 )
+
+const PARAMETER_TYPE*: tuple = (
+  long: "long",
+  short: "short",
+  argument: "argument",
+)
