@@ -4,7 +4,7 @@ from ../types/index as types import Listionary
 from ../constants/index as constants import PROXY_KEYS
 from ../commands/index as commands import help, validate, support
 
-proc proxy*(args: Listionary) =
+proc proxy*(args: Listionary): void =
   var arg: OrderedTableRef[string, string]
   discard args.pop(0, arg)
 
