@@ -4,6 +4,7 @@ from strformat import fmt
 from std/json import JsonNode, parseJson
 from ../types/index as types import Listionary
 from ../utils/index as utils import hasArgument
+from ../constants/index as constants import VALIDATE_OPTIONS
 
 proc specs(filename: string): JsonNode =
   try:
@@ -28,12 +29,12 @@ proc validate*(args: Listionary): void =
 
   for arg in args.values:
     case arg["key"]:
-      of "spec":
+      of VALIDATE_OPTIONS.spec:
         if cast[bool](arg["value"]):
           spec = specs(arg["value"])
           echo "--spec option applied;"
 
-      of "custom":
+      of VALIDATE_OPTIONS.custom:
         if cast[bool](arg["value"]):
           custom()
           echo "--custom option applied;"
