@@ -2,15 +2,15 @@ import std/tables
 
 from ../types/index as types import Listionary
 from ../constants/index as constants import PROXY_KEYS
-from ../functions/index as functions import help, validate
+from ../functions/index as functions import help, validate, support
 
-proc proxy*(commands: Listionary) =
-  var command: OrderedTableRef[string, string]
-  discard commands.pop(0, command)
+proc proxy*(args: Listionary) =
+  var arg: OrderedTableRef[string, string]
+  discard args.pop(0, arg)
 
-  case command["key"]
+  case arg["key"]
     of PROXY_KEYS.validate:
-      functions.validate()
+      functions.validate(args)
 
     of PROXY_KEYS.support:
       functions.support()
