@@ -9,6 +9,8 @@ let projects = """
 Projects:
   Star Devine on GitHub: https://github.com/Airscripts/devine
   Star my blog on GitHub: https://github.com/Airscripts/blog.airscript.it
+  Star my dotfiles on GitHub: https://github.com/Airscripts/dotfiles
+  Star Polyglot on GitHub: https://github.com/Airscripts/polyglot
 """
 
 let socials = """
