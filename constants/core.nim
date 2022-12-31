@@ -6,5 +6,6 @@ const DEFAULT_INDEX* = {
 
 const PROXY_KEYS* = (
   help: "help",
+  support: "support",
   validate: "validate",
 )

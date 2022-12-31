@@ -11,6 +11,10 @@ proc proxy*(commands: Listionary) =
         functions.validate()
         break
 
+      of PROXY_KEYS.support:
+        functions.support()
+        break
+
       of PROXY_KEYS.help:
         functions.help()
         break
