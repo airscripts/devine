@@ -2,7 +2,7 @@ import std/tables
 
 from ../types/index as types import Listionary
 from ../constants/index as constants import PROXY_KEYS
-from ../functions/index as functions import help, validate, support
+from ../commands/index as commands import help, validate, support
 
 proc proxy*(args: Listionary) =
   var arg: OrderedTableRef[string, string]
@@ -10,13 +10,13 @@ proc proxy*(args: Listionary) =
 
   case arg["key"]
     of PROXY_KEYS.validate:
-      functions.validate(args)
+      commands.validate(args)
 
     of PROXY_KEYS.support:
-      functions.support()
+      commands.support()
 
     of PROXY_KEYS.help:
-      functions.help()
+      commands.help()
 
     else:
-      functions.help()
+      commands.help()
