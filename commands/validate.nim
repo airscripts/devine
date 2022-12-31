@@ -10,7 +10,7 @@ proc specs(filename: string): JsonNode =
   try:
     const folder: string = "specs/"
     const extension: string = ".json"
-    var spec: string = readFile(fmt"{folder}{filename}{extension}")
+    let spec: string = readFile(fmt"{folder}{filename}{extension}")
     return parseJson(spec)
 
   except IOError:
@@ -18,7 +18,7 @@ proc specs(filename: string): JsonNode =
 
 proc custom(path: string): JsonNode =
   try:
-    var spec: string = readFile(path)
+    let spec: string = readFile(path)
     return parseJson(spec)
 
   except IOError:
@@ -27,7 +27,7 @@ proc custom(path: string): JsonNode =
 proc validate*(args: Listionary): void =
   var spec: JsonNode
   var path: OrderedTableRef[string, string]
-  var length: int = len(args)
+  let length: int = len(args)
 
   if utils.hasArgument(args[length]):
     discard args.pop(length, path)
