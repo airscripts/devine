@@ -8,16 +8,21 @@ from ../constants/index as constants import VALIDATE_OPTIONS
 
 proc specs(filename: string): JsonNode =
   try:
-    var folder: string = "specs/"
-    var extension: string = ".json"
+    const folder: string = "specs/"
+    const extension: string = ".json"
     var spec: string = readFile(fmt"{folder}{filename}{extension}")
     return parseJson(spec)
 
   except IOError:
     echo "Spec not available."
 
-proc custom(): void =
-  echo "custom procedure."
+proc custom(path: string): JsonNode =
+  try:
+    var spec: string = readFile(path)
+    return parseJson(spec)
+
+  except IOError:
+    echo "Custom spec not found."
 
 proc validate*(args: Listionary): void =
   var spec: JsonNode
@@ -36,11 +41,11 @@ proc validate*(args: Listionary): void =
 
       of VALIDATE_OPTIONS.custom:
         if cast[bool](arg["value"]):
-          custom()
+          spec = custom(arg["value"])
           echo "--custom option applied;"
       
       else:
-        echo "option skipped;"
+        echo fmt"-{arg[""key""]} option skipped;"
 
   if cast[bool](path):
     echo path
