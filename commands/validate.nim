@@ -1,14 +1,15 @@
 import std/tables
 
 from strformat import fmt
+from ../utils/index as utils import isKindKey
 from ../types/index as types import Listionary
-from ../utils/index as utils import hasArgument
 from std/json import JsonNode, parseJson, contains, keys
 from ../constants/index as constants import VALIDATE_OPTIONS
 
 from ../errors/index as errors import 
   MISSING_SPEC,
   MULTIPLE_SPECS,
+  MISSING_OPTIONS,
   MISSING_STRUCTURE,
   SPEC_NOT_AVAILABLE,
   STRUCTURE_NOT_FOUND,
@@ -19,21 +20,21 @@ proc specs(filename: string): JsonNode =
   try:
     const folder: string = "specs/"
     const extension: string = ".json"
-    let spec: string = readFile(fmt"{folder}{filename}{extension}")
-    return parseJson(spec)
+    let spec: string = readFile(filename=fmt"{folder}{filename}{extension}")
+    return parseJson(buffer=spec)
 
   except IOError:
     echo SPEC_NOT_AVAILABLE
-    system.quit(QuitFailure)
+    system.quit(errorcode=QuitFailure)
 
 proc custom(path: string): JsonNode =
   try:
-    let spec: string = readFile(path)
-    return parseJson(spec)
+    let spec: string = readFile(filename=path)
+    return parseJson(buffer=spec)
 
   except IOError:
     echo CUSTOM_SPEC_NOT_FOUND
-    system.quit(QuitFailure)
+    system.quit(errorcode=QuitFailure)
 
 proc hasMultipleSpecs(args: Listionary): bool =
   var custom: bool
@@ -47,58 +48,72 @@ proc hasMultipleSpecs(args: Listionary): bool =
   if standard and custom: return true
   else: return false
 
-proc parser(arg: OrderedTableRef[string, string]): JsonNode =
-  case arg["key"]:
-    of VALIDATE_OPTIONS.spec:
-      if cast[bool](arg["value"]):
-        return specs(arg["value"])
+proc parser(args: Listionary): tuple[spec: JsonNode] =
+  var spec: JsonNode
 
-    of VALIDATE_OPTIONS.custom:
-      if cast[bool](arg["value"]):
-        return custom(arg["value"])
+  const keys: tuple[key: string, value: string] = (
+    key: "key",
+    value: "value"
+  )
+
+  for arg in args.values:
+    case arg[keys.key]:
+      of VALIDATE_OPTIONS.spec:
+        if cast[bool](arg[keys.value]):
+          spec = specs(filename=arg[keys.value])
+
+      of VALIDATE_OPTIONS.custom:
+        if cast[bool](arg[keys.value]):
+          spec = custom(path=arg[keys.value])
     
-    else:
-      echo MISSING_SPEC
-      system.quit(QuitFailure)
+  if not cast[bool](spec):
+    echo MISSING_SPEC
+    system.quit(errorcode=QuitFailure)
+
+  else: return (spec: spec)
 
 proc processor(path: OrderedTableRef[string, string]): JsonNode =
   try:
-    let structure: string = readFile(path["key"])
-    return parseJson(structure)
+    let structure: string = readFile(filename=path["key"])
+    return parseJson(buffer=structure)
 
   except IOError:
     echo STRUCTURE_NOT_FOUND
+    system.quit(errorcode=QuitFailure)
 
 proc checker(structure: JsonNode, spec: JsonNode): void =
-  for key in keys(structure):
-    if not contains(spec, key):
-      raise newException(ValueError, "Key not found")
+  for key in keys(node=structure):
+    if not contains(node=spec, key=key):
+      echo STRUCTURE_MATCH_ERROR
+      system.quit(errorcode=QuitFailure)
 
-proc validate*(args: Listionary): void =
-  var spec: JsonNode
+proc validate*(args: Listionary): void = 
+  var parsors: tuple[spec: JsonNode]
   var structure: JsonNode
   var path: OrderedTableRef[string, string]
-  let length: int = len(args)
+  let length: int = len(t=args)
 
-  if utils.hasArgument(args[length]):
-    discard args.pop(length, path)
+  if not cast[bool](length):
+    echo MISSING_OPTIONS
+    system.quit(errorcode=QuitFailure)
 
-  if hasMultipleSpecs(args):
+  if utils.isKindKey(
+    key="type",
+    kind="argument",
+    value=args[length],
+  ):
+    discard pop(t=args, key=length, val=path)
+
+  if hasMultipleSpecs(args=args):
     echo MULTIPLE_SPECS
-    system.quit(QuitFailure)
+    system.quit(errorcode=QuitFailure)
 
-  for arg in args.values:
-    spec = parser(arg)
+  parsors = parser(args=args)
 
   if not cast[bool](path):
     echo MISSING_STRUCTURE
-    system.quit(QuitFailure)
+    system.quit(errorcode=QuitFailure)
 
-  try:
-    structure = processor(path)
-    checker(structure, spec)
-    system.quit(QuitSuccess)
-  
-  except ValueError:
-    echo STRUCTURE_MATCH_ERROR
-    system.quit(QuitFailure)
+  structure = processor(path=path)
+  checker(structure=structure, spec=parsors.spec)
+  system.quit(errorcode=QuitSuccess)

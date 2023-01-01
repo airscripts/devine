@@ -1,2 +1,2 @@
-import hasArgument
-export hasArgument
+import common
+export common
