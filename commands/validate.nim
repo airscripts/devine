@@ -4,7 +4,11 @@ from strformat import fmt
 from ../utils/index as utils import isKindKey
 from ../types/index as types import Listionary
 from std/json import JsonNode, parseJson, contains, keys
-from ../constants/index as constants import VALIDATE_OPTIONS
+
+from ../constants/index as constants import 
+  PARAMETER_TYPE,
+  PARAMETER_KEYS,
+  VALIDATE_OPTIONS
 
 from ../errors/index as errors import 
   MISSING_SPEC,
@@ -16,12 +20,14 @@ from ../errors/index as errors import
   CUSTOM_SPEC_NOT_FOUND,
   STRUCTURE_MATCH_ERROR
 
+const SPECS_FOLDER = "specs/"
+const SPEC_EXTENSION = ".json"
+
 proc specs(filename: string): JsonNode =
   try:
-    const folder: string = "specs/"
-    const extension: string = ".json"
-    let spec: string = readFile(filename=fmt"{folder}{filename}{extension}")
-    return parseJson(buffer=spec)
+    return parseJson(readFile(
+      filename=fmt"{SPECS_FOLDER}{filename}{SPEC_EXTENSION}"
+    ))
 
   except IOError:
     echo SPEC_NOT_AVAILABLE
@@ -29,42 +35,32 @@ proc specs(filename: string): JsonNode =
 
 proc custom(path: string): JsonNode =
   try:
-    let spec: string = readFile(filename=path)
-    return parseJson(buffer=spec)
+    return parseJson(buffer=readFile(filename=path))
 
   except IOError:
     echo CUSTOM_SPEC_NOT_FOUND
     system.quit(errorcode=QuitFailure)
 
-proc hasMultipleSpecs(args: Listionary): bool =
-  var custom: bool
-  var standard: bool
-
-  for arg in args.values:
-    case arg["key"]
-      of "spec": standard = true
-      of "custom": custom = true
-
-  if standard and custom: return true
-  else: return false
-
 proc parser(args: Listionary): tuple[spec: JsonNode] =
   var spec: JsonNode
-
-  const keys: tuple[key: string, value: string] = (
-    key: "key",
-    value: "value"
-  )
+  var hasSpec: bool = false
+  var hasCustom: bool = false
 
   for arg in args.values:
-    case arg[keys.key]:
+    case arg[PARAMETER_KEYS.key]:
       of VALIDATE_OPTIONS.spec:
-        if cast[bool](arg[keys.value]):
-          spec = specs(filename=arg[keys.value])
+        if cast[bool](arg[PARAMETER_KEYS.value]):
+          spec = specs(filename=arg[PARAMETER_KEYS.value])
+          hasSpec = true
 
       of VALIDATE_OPTIONS.custom:
-        if cast[bool](arg[keys.value]):
-          spec = custom(path=arg[keys.value])
+        if cast[bool](arg[PARAMETER_KEYS.value]):
+          spec = custom(path=arg[PARAMETER_KEYS.value])
+          hasCustom = true
+
+  if hasSpec and hasCustom:
+    echo MULTIPLE_SPECS
+    system.quit(errorcode=QuitFailure)
     
   if not cast[bool](spec):
     echo MISSING_SPEC
@@ -74,7 +70,7 @@ proc parser(args: Listionary): tuple[spec: JsonNode] =
 
 proc processor(path: OrderedTableRef[string, string]): JsonNode =
   try:
-    let structure: string = readFile(filename=path["key"])
+    let structure: string = readFile(filename=path[PARAMETER_KEYS.key])
     return parseJson(buffer=structure)
 
   except IOError:
@@ -98,15 +94,11 @@ proc validate*(args: Listionary): void =
     system.quit(errorcode=QuitFailure)
 
   if utils.isKindKey(
-    key="type",
-    kind="argument",
     value=args[length],
+    key=PARAMETER_KEYS.type,
+    kind=PARAMETER_TYPE.argument,
   ):
     discard pop(t=args, key=length, val=path)
-
-  if hasMultipleSpecs(args=args):
-    echo MULTIPLE_SPECS
-    system.quit(errorcode=QuitFailure)
 
   parsors = parser(args=args)
 
