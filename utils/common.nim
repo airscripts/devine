@@ -1,9 +1,7 @@
 import std/tables
 
-proc isKindKey*(
-  value: OrderedTableRef[string, string],
-  key: string,
-  kind: string
-): bool =
-  if value[key] == kind: return true
+from ../types/index as types import Dictionary
+
+proc isEqualTo*(dict: Dictionary, key: string, value: string): bool =
+  if dict[key] == value: return true
   else: return false
