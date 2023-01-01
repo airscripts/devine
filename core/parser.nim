@@ -1,5 +1,7 @@
 import std/tables 
 
+from ../types/index as types import Listionary
+
 from std/parseopt import
   next,
   cmdEnd,
@@ -9,8 +11,10 @@ from std/parseopt import
   cmdLongOption,
   cmdShortOption
 
-from ../types/index as types import Listionary
-from ../constants/index as constants import DEFAULT_INDEX, PARAMETER_TYPE
+from ../constants/index as constants import 
+  DEFAULT_INDEX,
+  PARAMETER_TYPE,
+  PARAMETER_KEYS
 
 proc initializeIndex(): OrderedTableRef[string, string] =
   return DEFAULT_INDEX.newOrderedTable
@@ -43,9 +47,10 @@ proc parser*(list: var OptParser): Listionary =
     if isCmdEnd: break
 
     parameters[index] = initializeIndex()
-    parameters[index]["key"] = list.key
-    parameters[index]["value"] = list.val
-    parameters[index]["type"] = setParameterType(list.kind)
+    parameters[index][PARAMETER_KEYS.key] = list.key
+    parameters[index][PARAMETER_KEYS.value] = list.val
+    parameters[index][PARAMETER_KEYS.type] = setParameterType(list.kind)
+
     index += 1
 
   return parameters
