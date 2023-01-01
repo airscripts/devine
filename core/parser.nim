@@ -26,7 +26,7 @@ proc setter(element: OptParser): Dictionary =
   return {
     PARAMETER_KEYS.key: element.key,
     PARAMETER_KEYS.value: element.val,
-    PARAMETER_KEYS.kind: siever(element.kind),
+    PARAMETER_KEYS.kind: siever(kind=element.kind),
   }.newOrderedTable
 
 proc parser*(list: var OptParser): Listionary =
@@ -37,7 +37,7 @@ proc parser*(list: var OptParser): Listionary =
   while true:
     list.next()
     if list.kind == cmdEnd: break
-    parameters[index] = setter(list)
+    parameters[index] = setter(element=list)
     index += 1
 
   return parameters
