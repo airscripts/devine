@@ -12,12 +12,6 @@ const PARAMETER_KINDS*: ParameterKinds = (
   argument: "argument",
 )
 
-const DEFAULT_INDEX*: array[0..2, (string, string)] = {
-  PARAMETER_KEYS.key: "",
-  PARAMETER_KEYS.kind: "",
-  PARAMETER_KEYS.value: "",
-}
-
 const PROXY_KEYS*: ProxyKeys = (
   help: "help",
   support: "support",

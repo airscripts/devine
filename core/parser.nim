@@ -1,4 +1,4 @@
-import std/tables 
+import std/tables
 
 from ../types/index as types import Listionary, Dictionary
 
@@ -11,46 +11,33 @@ from std/parseopt import
   cmdLongOption,
   cmdShortOption
 
-from ../constants/index as constants import 
-  DEFAULT_INDEX,
+from ../constants/index as constants import
   PARAMETER_KEYS,
   PARAMETER_KINDS
 
-proc initializeIndex(): Dictionary =
-  return DEFAULT_INDEX.newOrderedTable
-
-proc setParameterType(kind: CmdLineKind): string = 
+proc siever(kind: CmdLineKind): string =
   case kind
-    of cmdArgument:
-      return PARAMETER_KINDS.argument
+    of cmdLongOption: return PARAMETER_KINDS.long
+    of cmdArgument: return PARAMETER_KINDS.argument
+    of cmdShortOption: return PARAMETER_KINDS.short
+    else: discard
 
-    of cmdShortOption:
-      return PARAMETER_KINDS.short
-    
-    of cmdLongOption:
-      return PARAMETER_KINDS.long
-    
-    else: 
-      discard
+proc setter(element: OptParser): Dictionary =
+  return {
+    PARAMETER_KEYS.key: element.key,
+    PARAMETER_KEYS.value: element.val,
+    PARAMETER_KEYS.kind: siever(element.kind),
+  }.newOrderedTable
 
 proc parser*(list: var OptParser): Listionary =
   var index: int = 0
-
-  var parameters: Listionary = newOrderedTable[
-    int, newOrderedTable[string, string]()
-  ]()
+  var dictionary: Dictionary = newOrderedTable[string, string]()
+  var parameters: Listionary = newOrderedTable[int, dictionary]()
 
   while true:
     list.next()
-
-    let isCmdEnd: bool = list.kind == cmdEnd
-    if isCmdEnd: break
-
-    parameters[index] = initializeIndex()
-    parameters[index][PARAMETER_KEYS.key] = list.key
-    parameters[index][PARAMETER_KEYS.value] = list.val
-    parameters[index][PARAMETER_KEYS.kind] = setParameterType(list.kind)
-
+    if list.kind == cmdEnd: break
+    parameters[index] = setter(list)
     index += 1
 
   return parameters
