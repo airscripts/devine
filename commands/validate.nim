@@ -1,13 +1,13 @@
 import std/tables
 
 from strformat import fmt
-from ../utils/index as utils import isKindKey
-from ../types/index as types import Listionary
+from ../utils/index as utils import isEqualTo
 from std/json import JsonNode, parseJson, contains, keys
+from ../types/index as types import Listionary, Dictionary
 
 from ../constants/index as constants import 
-  PARAMETER_TYPE,
   PARAMETER_KEYS,
+  PARAMETER_KINDS,
   VALIDATE_OPTIONS
 
 from ../errors/index as errors import 
@@ -68,7 +68,7 @@ proc parser(args: Listionary): tuple[spec: JsonNode] =
 
   else: return (spec: spec)
 
-proc processor(path: OrderedTableRef[string, string]): JsonNode =
+proc processor(path: Dictionary): JsonNode =
   try:
     let structure: string = readFile(filename=path[PARAMETER_KEYS.key])
     return parseJson(buffer=structure)
@@ -84,19 +84,19 @@ proc checker(structure: JsonNode, spec: JsonNode): void =
       system.quit(errorcode=QuitFailure)
 
 proc validate*(args: Listionary): void = 
-  var parsors: tuple[spec: JsonNode]
+  var path: Dictionary
   var structure: JsonNode
-  var path: OrderedTableRef[string, string]
+  var parsors: tuple[spec: JsonNode]
   let length: int = len(t=args)
 
   if not cast[bool](length):
     echo MISSING_OPTIONS
     system.quit(errorcode=QuitFailure)
 
-  if utils.isKindKey(
-    value=args[length],
-    key=PARAMETER_KEYS.type,
-    kind=PARAMETER_TYPE.argument,
+  if utils.isEqualTo(
+    dict=args[length],
+    key=PARAMETER_KEYS.kind,
+    value=PARAMETER_KINDS.argument,
   ):
     discard pop(t=args, key=length, val=path)
 

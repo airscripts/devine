@@ -1,6 +1,4 @@
 import std/tables
 
-type Listionary* = OrderedTableRef[
-  int, 
-  OrderedTableRef[string, string]
-]
+type Dictionary* = OrderedTableRef[string, string]
+type Listionary* = OrderedTableRef[int, Dictionary]

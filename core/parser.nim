@@ -1,6 +1,6 @@
 import std/tables 
 
-from ../types/index as types import Listionary
+from ../types/index as types import Listionary, Dictionary
 
 from std/parseopt import
   next,
@@ -13,22 +13,22 @@ from std/parseopt import
 
 from ../constants/index as constants import 
   DEFAULT_INDEX,
-  PARAMETER_TYPE,
-  PARAMETER_KEYS
+  PARAMETER_KEYS,
+  PARAMETER_KINDS
 
-proc initializeIndex(): OrderedTableRef[string, string] =
+proc initializeIndex(): Dictionary =
   return DEFAULT_INDEX.newOrderedTable
 
 proc setParameterType(kind: CmdLineKind): string = 
   case kind
     of cmdArgument:
-      return PARAMETER_TYPE.argument
+      return PARAMETER_KINDS.argument
 
     of cmdShortOption:
-      return PARAMETER_TYPE.short
+      return PARAMETER_KINDS.short
     
     of cmdLongOption:
-      return PARAMETER_TYPE.long
+      return PARAMETER_KINDS.long
     
     else: 
       discard
@@ -49,7 +49,7 @@ proc parser*(list: var OptParser): Listionary =
     parameters[index] = initializeIndex()
     parameters[index][PARAMETER_KEYS.key] = list.key
     parameters[index][PARAMETER_KEYS.value] = list.val
-    parameters[index][PARAMETER_KEYS.type] = setParameterType(list.kind)
+    parameters[index][PARAMETER_KEYS.kind] = setParameterType(list.kind)
 
     index += 1
 
