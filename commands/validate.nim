@@ -6,6 +6,8 @@ from std/json import JsonNode, parseJson, contains, keys
 from ../types/index as types import Listionary, Dictionary
 
 from ../constants/index as constants import 
+  SPECS_FOLDER,
+  SPEC_EXTENSION,
   PARAMETER_KEYS,
   PARAMETER_KINDS,
   VALIDATE_OPTIONS
@@ -19,9 +21,6 @@ from ../errors/index as errors import
   STRUCTURE_NOT_FOUND,
   CUSTOM_SPEC_NOT_FOUND,
   STRUCTURE_MATCH_ERROR
-
-const SPECS_FOLDER = "specs/"
-const SPEC_EXTENSION = ".json"
 
 proc specs(filename: string): JsonNode =
   try:
