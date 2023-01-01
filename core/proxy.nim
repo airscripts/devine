@@ -9,14 +9,7 @@ proc proxy*(args: Listionary): void =
   discard args.pop(0, arg)
 
   case arg[PARAMETER_KEYS.key]
-    of PROXY_KEYS.validate:
-      commands.validate(args)
-
-    of PROXY_KEYS.support:
-      commands.support()
-
-    of PROXY_KEYS.help:
-      commands.help()
-
-    else:
-      commands.help()
+    of PROXY_KEYS.help: commands.help()
+    of PROXY_KEYS.support: commands.support()
+    of PROXY_KEYS.validate: commands.validate(args)
+    else: commands.help()
