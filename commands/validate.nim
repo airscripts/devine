@@ -84,6 +84,7 @@ proc checker(structure: JsonNode, spec: JsonNode): void =
 
 proc validate*(args: Listionary): void = 
   var path: Dictionary
+  var hasArgument: bool
   var structure: JsonNode
   var parsors: tuple[spec: JsonNode]
   let length: int = len(t=args)
@@ -92,11 +93,13 @@ proc validate*(args: Listionary): void =
     echo MISSING_OPTIONS
     system.quit(errorcode=QuitFailure)
 
-  if utils.isEqualTo(
+  hasArgument = utils.isEqualTo(
     dict=args[length],
     key=PARAMETER_KEYS.kind,
-    value=PARAMETER_KINDS.argument,
-  ):
+    value=PARAMETER_KINDS.argument
+  )
+
+  if hasArgument:
     discard pop(t=args, key=length, val=path)
 
   parsors = parser(args=args)
